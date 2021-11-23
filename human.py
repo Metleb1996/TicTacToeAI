@@ -5,6 +5,8 @@ class Human(ABSGamer):
     def __init__(self, name:str):
         self.name = name
 
+    def getName(self):
+        return self.name
 
     def playStep(self, game:TicTacToe, pos=-1):
         r = game.attack(self.name, pos)
