@@ -19,7 +19,7 @@ class TicTacToe:
     def attack(self, gamer='Y', pos=9):
         if self.isBoardFilled():
             return "Board is filled"
-        if not pos in range(9):
+        if pos not in range(9):
             return "{} not a valid position".format(str(pos))
         if gamer not in self.gamers:
             return "{} not a valid gamer".format(gamer)
