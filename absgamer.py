@@ -6,5 +6,8 @@ class ABSGamer():
     def __init__(self, name: str):
         pass
     @abstractmethod
+    def getName(self):
+        pass
+    @abstractmethod
     def playStep(self, game: TicTacToe, pos: int):
         pass
