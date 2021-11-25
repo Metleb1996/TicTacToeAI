@@ -11,9 +11,13 @@ agent = Agent(name="X")
 def print_board(board):
     print("\n{} {} {}\n{} {} {}\n{} {} {}\n______\n".format(*board))
 
+def train(count=1000000):
+    agent.train(first='O', dum=dummy, count=count)
+    agent.train(first='X', dum=dummy, count=count)
+
 if __name__ == "__main__":
-    agent.train(first='O', dum=dummy, count=1000000)
-    """ for i in range(9):
+    train(count=1000)
+    """for i in range(9):
         d, game = dummy.playStep(game=game); print(d)
         b = game.getBoard()
         print_board(b)
@@ -28,5 +32,5 @@ if __name__ == "__main__":
         if game.isBoardFilled():
             print("Hec-hece")
             break
-         """
+        """
     
