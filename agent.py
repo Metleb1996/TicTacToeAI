@@ -1,17 +1,41 @@
 import os
-import datetime
 import random
 from absgamer import ABSGamer
 from dummy import Dummy
 from tictactoe import TicTacToe
 
 class Agent(ABSGamer):
-    def __init__(self, name:str, baseName:str = ".tictactoe"):
+    def __init__(self, name:str, baseName:str = "l1.tictactoe"):
         self.name = name
-        if not os.path.isfile('./'+baseName):
-            baseName = str(datetime.datetime.utcnow().timestamp())+".tictactoe"
         self.baseName = baseName
-        self.base = {} # example {'iiirrr---':{6:50, 7:50, 8:50}} i - men , r - rival(reqib)
+        self.base = {} # example {'iiirrr---':{6:{'+':0,'-':0,'n':0},7:{'+':0,'-':0,'n':0},8:{'+':0,'-':0,'n':0}}} i - men , r - rival(reqib)
+        if os.path.isfile('./'+baseName):
+            self.loadFile(baseName)
+            
+
+    def loadFile(self, fname):
+        lines = []
+        with open('./'+fname, 'r') as baseFile:
+            lines = baseFile.readlines()
+            baseFile.close()
+        if len(lines) > 0:
+            for line in lines:
+                parts = line.split('>')
+                key = parts[0]
+                value = {}
+                for i in range(1, len(parts)):
+                    v = parts[i].split(":")
+                    value.update({int(v[0]):{'+':int(v[1]),'-':int(v[2]),'n':int(v[3])}})
+                self.base.update({key:value})
+        
+    def saveFile(self):
+        with open('./'+self.baseName, 'w') as f:
+            for key in self.base:
+                line = str(key)
+                for vareant in self.base[key]:
+                    line = line+">"+str(vareant)+":"+str(self.base[key][vareant]['+'])+":"+str(self.base[key][vareant]['-'])+":"+str(self.base[key][vareant]['n'])
+                line += '\n'
+                f.write(line)
 
     def getName(self):
         return self.name
@@ -39,10 +63,19 @@ class Agent(ABSGamer):
         return "msg", False
 
     def playStep(self, game:TicTacToe):
-        pass
+        rival = "X" if self.name == "O" else "O"
+        key, empty = self.boardToKey(game.getBoard(), self.name, rival)
+        my_change = {"pos":empty[0], "val":0.0}
+        variants = self.base[key]
+        for variant in variants:
+            val = (variants[variant]['+']-variants[variant]['-'])/(variants[variant]['+']+variants[variant]['-']+variants[variant]['n'])
+            if val > my_change['val']:
+                my_change['pos'] = variant
+                my_change['val'] = val
+        r = game.attack(gamer=self.name, pos=my_change['pos'])
+        return r, game
 
     def train(self, first:str, dum: Dummy, count:int):
-        self.base.clear()
         self.game_history = {}
         for iii in range(count): # count sayda oyun
             game = TicTacToe(first=first)
@@ -60,12 +93,14 @@ class Agent(ABSGamer):
                         if key not in list(self.base.keys()):
                             values = {}
                             for emp_box in empty:
-                                values.update({emp_box: 50.0})
+                                values.update({emp_box: {'+':0, '-':0, 'n':0}})
                             self.base.update({key: values})
                         if msg == self.name:
-                            self.base[key][my_change] += ((100.0 - self.base[key][my_change])/2) 
+                            self.base[key][my_change]['+'] += 1
                         if msg == dum.name:
-                            self.base[key][my_change] = (self.base[key][my_change]/2) 
+                            self.base[key][my_change]['-'] += 1 
+                        if msg == "H":
+                            self.base[key][my_change]['n'] += 1 
                     self.game_history.clear()
                     break
                 for gamer in gamers:
@@ -81,5 +116,4 @@ class Agent(ABSGamer):
                     msg, isEnd = self.gameStateControl(game)
                     if(isEnd):
                         break
-        for key in self.base:
-            print(key, self.base[key])
+        self.saveFile()
