@@ -52,22 +52,16 @@ class Agent(ABSGamer):
                 empty.append(index)
         return s, empty
 
-    def gameStateControl(self, game):
-        if game.isWinned(gamer="X"):
-            return "X", True
-        if game.isWinned(gamer="O"):
-            return "O", True
-        if game.isBoardFilled():
-            return "H", True
-        return "msg", False
-
     def playStep(self, game:TicTacToe):
         rival = "X" if self.name == "O" else "O"
         key, empty = self.boardToKey(game.getBoard(), self.name, rival)
         my_change = {"pos":empty[0], "val":0.0}
         variants = self.base[key]
         for variant in variants:
-            val = (variants[variant]['+']-variants[variant]['-'])/(variants[variant]['+']+variants[variant]['-']+variants[variant]['n'])
+            if (variants[variant]['+']+variants[variant]['-']+variants[variant]['n']) == 0:
+                val = 0.0
+            else:
+                val = (variants[variant]['+']-variants[variant]['-'])/(variants[variant]['+']+variants[variant]['-']+variants[variant]['n'])
             if val > my_change['val']:
                 my_change['pos'] = variant
                 my_change['val'] = val
@@ -112,7 +106,15 @@ class Agent(ABSGamer):
                         _, game = gamer.playStep(game=game);
                     b = game.getBoard()
                     key, empty = self.boardToKey(b, self.name, rival.name)
-                    msg, isEnd = self.gameStateControl(game)
+                    if game.isWinned(gamer="X"):
+                        msg = "X"
+                        isEnd = True
+                    elif game.isWinned(gamer="O"):
+                        msg = "O"
+                        isEnd = True
+                    elif game.isBoardFilled():
+                        msg = "H"
+                        isEnd = True
                     if(isEnd):
                         break
         self.saveFile()
