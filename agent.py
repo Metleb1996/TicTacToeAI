@@ -1,7 +1,6 @@
 import os
 import random
 from absgamer import ABSGamer
-from dummy import Dummy
 from tictactoe import TicTacToe
 
 class Agent(ABSGamer):
@@ -75,15 +74,15 @@ class Agent(ABSGamer):
         r = game.attack(gamer=self.name, pos=my_change['pos'])
         return r, game
 
-    def train(self, first:str, dum: Dummy, count:int):
+    def train(self, first:str, rival: ABSGamer, count:int):
         self.game_history = {}
         for iii in range(count): # count sayda oyun
             game = TicTacToe(first=first)
-            gamers = [dum, self]
+            gamers = [rival, self]
             isEnd = False
             msg = str()
             empty = [*range(9)]
-            key, _ = self.boardToKey(game.getBoard(), self.name, dum.name)
+            key, _ = self.boardToKey(game.getBoard(), self.name, rival.name)
             while True: 
                 if isEnd:
                     for game_step in self.game_history:
@@ -97,7 +96,7 @@ class Agent(ABSGamer):
                             self.base.update({key: values})
                         if msg == self.name:
                             self.base[key][my_change]['+'] += 1
-                        if msg == dum.name:
+                        if msg == rival.name:
                             self.base[key][my_change]['-'] += 1 
                         if msg == "H":
                             self.base[key][my_change]['n'] += 1 
@@ -112,7 +111,7 @@ class Agent(ABSGamer):
                     else:
                         _, game = gamer.playStep(game=game);
                     b = game.getBoard()
-                    key, empty = self.boardToKey(b, self.name, dum.name)
+                    key, empty = self.boardToKey(b, self.name, rival.name)
                     msg, isEnd = self.gameStateControl(game)
                     if(isEnd):
                         break
