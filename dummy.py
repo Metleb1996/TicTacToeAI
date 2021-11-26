@@ -8,6 +8,9 @@ class Dummy(ABSGamer):
 
     def getName(self):
         return self.name
+
+    def getType(self):
+        return "DUMMY"
         
     def playStep(self, game:TicTacToe, pos=-1):
         tryAgain = True

@@ -38,6 +38,9 @@ class Agent(ABSGamer):
 
     def getName(self):
         return self.name
+    
+    def getType(self):
+        return "AGENT"
 
     def boardToKey(self, board, i, r):
         s = str()

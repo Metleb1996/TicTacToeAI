@@ -9,5 +9,8 @@ class ABSGamer():
     def getName(self):
         pass
     @abstractmethod
+    def getType(self):
+        pass
+    @abstractmethod
     def playStep(self, game: TicTacToe, pos: int):
         pass
