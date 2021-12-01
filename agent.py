@@ -74,7 +74,7 @@ class Agent(ABSGamer):
     def train(self, first:str, rival: ABSGamer, count:int):
         self.game_history = {}
         for iii in range(count): # count sayda oyun
-            game = TicTacToe(first=first)
+            game = TicTacToe(first=first); print("Step:  ", iii)
             gamers = [rival, self]
             isEnd = False
             msg = str()
