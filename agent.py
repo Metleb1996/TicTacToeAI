@@ -71,53 +71,54 @@ class Agent(ABSGamer):
         r = game.attack(gamer=self.name, pos=my_change['pos'])
         return r, game
 
-    def train(self, first:str, rival: ABSGamer, count:int):
+    def train(self, rival: ABSGamer, count:int):
         self.game_history = {}
-        for iii in range(count): # count sayda oyun
-            game = TicTacToe(first=first); print("Step:  ", iii)
-            gamers = [rival, self]
-            isEnd = False
-            msg = str()
-            empty = [*range(9)]
-            key, _ = self.boardToKey(game.getBoard(), self.name, rival.name)
-            while True: 
-                if isEnd:
-                    for game_step in self.game_history:
-                        key = game_step
-                        empty = self.game_history[key][0]
-                        my_change = self.game_history[key][1]
-                        if key not in list(self.base.keys()):
-                            values = {}
-                            for emp_box in empty:
-                                values.update({emp_box: {'+':0, '-':0, 'n':0}})
-                            self.base.update({key: values})
-                        if msg == self.name:
-                            self.base[key][my_change]['+'] += 1
-                        if msg == rival.name:
-                            self.base[key][my_change]['-'] += 1 
-                        if msg == "H":
-                            self.base[key][my_change]['n'] += 1 
-                    self.game_history.clear()
-                    break
-                for gamer in gamers:
-                    if gamer == self:
-                        my_change = empty[random.randrange(len(empty))]
-                        _ = game.attack(gamer=self.name, pos=my_change)
-                        step = {key:[empty,my_change]}
-                        self.game_history.update(step)
-                    else:
-                        _, game = gamer.playStep(game=game);
-                    b = game.getBoard()
-                    key, empty = self.boardToKey(b, self.name, rival.name)
-                    if game.isWinned(gamer="X"):
-                        msg = "X"
-                        isEnd = True
-                    elif game.isWinned(gamer="O"):
-                        msg = "O"
-                        isEnd = True
-                    elif game.isBoardFilled():
-                        msg = "H"
-                        isEnd = True
-                    if(isEnd):
+        for first in ['X', 'O']:
+            for iii in range(count): # count sayda oyun
+                game = TicTacToe(first=first)
+                gamers = [rival, self]
+                isEnd = False
+                msg = str()
+                empty = [*range(9)]
+                key, _ = self.boardToKey(game.getBoard(), self.name, rival.name)
+                while True: 
+                    if isEnd:
+                        for game_step in self.game_history:
+                            key = game_step
+                            empty = self.game_history[key][0]
+                            my_change = self.game_history[key][1]
+                            if key not in list(self.base.keys()):
+                                values = {}
+                                for emp_box in empty:
+                                    values.update({emp_box: {'+':0, '-':0, 'n':0}})
+                                self.base.update({key: values})
+                            if msg == self.name:
+                                self.base[key][my_change]['+'] += 1
+                            if msg == rival.name:
+                                self.base[key][my_change]['-'] += 1 
+                            if msg == "H":
+                                self.base[key][my_change]['n'] += 1 
+                        self.game_history.clear()
                         break
+                    for gamer in gamers:
+                        if gamer == self:
+                            my_change = empty[random.randrange(len(empty))]
+                            _ = game.attack(gamer=self.name, pos=my_change)
+                            step = {key:[empty,my_change]}
+                            self.game_history.update(step)
+                        else:
+                            _, game = gamer.playStep(game=game);
+                        b = game.getBoard()
+                        key, empty = self.boardToKey(b, self.name, rival.name)
+                        if game.isWinned(gamer="X"):
+                            msg = "X"
+                            isEnd = True
+                        elif game.isWinned(gamer="O"):
+                            msg = "O"
+                            isEnd = True
+                        elif game.isBoardFilled():
+                            msg = "H"
+                            isEnd = True
+                        if(isEnd):
+                            break
         self.saveFile()
