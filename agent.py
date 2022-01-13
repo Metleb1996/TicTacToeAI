@@ -75,6 +75,7 @@ class Agent(ABSGamer):
         self.game_history = {}
         for first in ['X', 'O']:
             for iii in range(count): # count sayda oyun
+                print("Step:  ", iii)
                 game = TicTacToe(first=first)
                 gamers = [rival, self]
                 isEnd = False

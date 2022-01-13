@@ -45,6 +45,6 @@ def play(first_gamer, second_gamer):
                 break
 
 if __name__ == "__main__":
-    train(inagent=agent, inrival=dummy, count=1000000)
-    #play(first_gamer=Human(name="X"), second_gamer=Agent(name="O"))
+    #train(inagent=agent, inrival=dummy, count=1000000)
+    play(first_gamer=Human(name="X"), second_gamer=Agent(name="O"))
     
