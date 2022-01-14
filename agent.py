@@ -58,13 +58,13 @@ class Agent(ABSGamer):
     def playStep(self, game:TicTacToe):
         rival = "X" if self.name == "O" else "O"
         key, empty = self.boardToKey(game.getBoard(), self.name, rival)
-        my_change = {"pos":empty[0], "val":0.0}
+        my_change = {"pos":empty[0], "val":-1}
         variants = self.base[key]
         for variant in variants:
             if (variants[variant]['+']+variants[variant]['-']+variants[variant]['n']) == 0:
                 val = 0.0
             else:
-                val = (variants[variant]['+']-variants[variant]['-'])/(variants[variant]['+']+variants[variant]['-']+variants[variant]['n'])
+                val = (variants[variant]['+']-variants[variant]['-'])/(variants[variant]['+']+variants[variant]['-']+variants[variant]['n']); 
             if val > my_change['val']:
                 my_change['pos'] = variant
                 my_change['val'] = val
